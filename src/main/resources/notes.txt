@@ -1,0 +1,5 @@
+Identifier holds an attributeMap
+identifier get list of hierarchy
+make attributeMap immutable, pre calculate hash
+photoelement parents map with attributeMap + photoelement
+photoelement getid and getidentifier
