@@ -1,39 +1,8 @@
 package model.photo;
 
-import model.attribute.Attribute;
-import model.attribute.AttributeMap;
-import model.attribute.AttributeSet;
-import model.photo.element.Photo;
-import model.photo.element.PhotoAlbum;
-import model.photo.element.PhotoCollection;
-import model.photo.element.PhotoElement;
-import model.photo.element.PhotoYear;
-import org.testng.annotations.Test;
-import util.PhotoElementUtils;
-
-import static model.photo.PhotoKind.ALBUM;
-import static model.photo.PhotoKind.COLLECTION;
-import static model.photo.PhotoKind.PHOTO;
-import static model.photo.PhotoKind.YEAR;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static util.PhotoElementUtils.ALBUM_DAY;
-import static util.PhotoElementUtils.ALBUM_MONTH;
-import static util.PhotoElementUtils.ALBUM_NAME;
-import static util.PhotoElementUtils.ATTRS_ALBUM;
-import static util.PhotoElementUtils.ATTRS_COLLECTION;
-import static util.PhotoElementUtils.ATTRS_YEAR;
-import static util.PhotoElementUtils.COLLECTION_NAME;
-import static util.PhotoElementUtils.PHOTO_NAME;
-import static util.PhotoElementUtils.PHOTO_SIZE;
-import static util.PhotoElementUtils.YEAR_VALUE;
-import static util.PhotoElementUtils.createAlbum;
-import static util.PhotoElementUtils.createCollection;
-import static util.PhotoElementUtils.createPhoto;
-
 public class PhotoKindTest {
-
-    public static final Attribute<Integer> ATTR_INVALID = Attribute.newIntegerAttribute("invalid");
+/*
+    public static final Attribute ATTR_INVALID = Attribute.newIntegerAttribute("invalid");
     private static final AttributeMap ATTRS_INVALID =
             AttributeMap.builderFor(AttributeSet.of(ATTR_INVALID)).with(ATTR_INVALID, 1026).build();
 
@@ -51,7 +20,6 @@ public class PhotoKindTest {
         assertEquals(PhotoCollection.class, collection.getClass());
         assertEquals(COLLECTION, collection.getKind());
         assertEquals(COLLECTION_NAME, collection.getAttribute(PhotoCollection.F_NAME));
-        assertEquals(COLLECTION_NAME, collection.getId());
         assertEquals(collection, new PhotoCollection(PhotoElementUtils.ATTRS_COLLECTION));
     }
 
@@ -148,4 +116,5 @@ public class PhotoKindTest {
     public void testPhotoNullParent() {
         PHOTO.create(null, ATTRS_YEAR);
     }
+    */
 }

@@ -6,17 +6,28 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
 
-public final class AttributeSet implements Iterable<Attribute<?>> {
-    private final ImmutableSet<Attribute<?>> attributeSet;
+/**
+ * A set of attribute elements
+ * It implements an iterable of the attributes it contains.  It will iterate deterministically: in the
+ * same order in which the attribute set was created.
+ */
+public final class AttributeSet implements Iterable<Attribute> {
+    private final ImmutableSet<Attribute> attributeSet;
+    // Pre-calculated hash
     private final int hashCode;
 
-    private AttributeSet(@NotNull ImmutableSet<Attribute<?>> attributeSet) {
+    private AttributeSet(@NotNull ImmutableSet<Attribute> attributeSet) {
         this.attributeSet = attributeSet;
         hashCode = attributeSet.hashCode();
     }
 
-    public boolean contains(@NotNull Attribute attribute) {
-        return attributeSet.contains(attribute);
+    /**
+     * Checks that the specified attribute set is completely contained in this attribute set
+     * @param another the attribute set to check
+     * @return true if another is contained in this attribute set
+     */
+    public boolean contains(@NotNull Attribute another) {
+        return attributeSet.contains(another);
     }
 
     /**
@@ -33,7 +44,7 @@ public final class AttributeSet implements Iterable<Attribute<?>> {
     }
 
     @Override
-    public Iterator<Attribute<?>> iterator() {
+    public Iterator<Attribute> iterator() {
         return attributeSet.iterator();
     }
 
@@ -55,17 +66,17 @@ public final class AttributeSet implements Iterable<Attribute<?>> {
         return "AttributeSet{" + attributeSet + '}';
     }
 
-    public static AttributeSet of(Attribute<?> attribute) {
+    public static AttributeSet of(@NotNull Attribute attribute) {
         return new AttributeSet(ImmutableSet.of(attribute));
     }
 
-    public static AttributeSet of(Attribute<?> attribute1, Attribute<?> attribute2) {
+    public static AttributeSet of(@NotNull Attribute attribute1, @NotNull Attribute attribute2) {
         return new AttributeSet(ImmutableSet.of(attribute1, attribute2));
     }
 
-    public static AttributeSet of(@NotNull Attribute<?> attribute1,
-                                  @NotNull Attribute<?> attribute2,
-                                  @NotNull Attribute<?> attribute3) {
+    public static AttributeSet of(@NotNull Attribute attribute1,
+                                  @NotNull Attribute attribute2,
+                                  @NotNull Attribute attribute3) {
         return new AttributeSet(ImmutableSet.of(attribute1, attribute2, attribute3));
     }
 }

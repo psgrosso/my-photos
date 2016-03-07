@@ -1,22 +1,8 @@
 package model.photo.builder;
 
 
-import model.attribute.AttributeMap;
-import model.photo.element.PhotoCollection;
-import model.photo.element.PhotoElement;
-import model.photo.element.PhotoYear;
-import org.testng.annotations.Test;
-import util.PhotoElementUtils;
-
-import static model.photo.PhotoKind.COLLECTION;
-import static org.testng.AssertJUnit.assertEquals;
-import static org.testng.AssertJUnit.assertNotNull;
-import static org.testng.AssertJUnit.assertSame;
-import static util.PhotoElementUtils.COLLECTION_NAME;
-import static util.PhotoElementUtils.YEAR_NAME;
-
 public class PhotoElementBuilderTest {
-
+/*
     @Test
     public void testHappyPath() {
         PhotoElementBuilder builder = new PhotoElementBuilder(PhotoElementUtils.ATTRS_COLLECTION);
@@ -85,5 +71,5 @@ public class PhotoElementBuilderTest {
 
         PhotoCollection collection = mainCollection.build();
         System.out.println(collection);
-    }
+    }*/
 }

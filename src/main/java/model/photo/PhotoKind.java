@@ -1,23 +1,24 @@
 package model.photo;
 
-import model.attribute.AttributeMap;
 import model.attribute.AttributeSet;
+import model.attribute.AttributeValueMap;
 import model.photo.element.Photo;
 import model.photo.element.PhotoAlbum;
 import model.photo.element.PhotoCollection;
 import model.photo.element.PhotoElement;
 import model.photo.element.PhotoYear;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 
 public enum PhotoKind {
     COLLECTION {
         @Override
-        public PhotoCollection create(PhotoElement parent, @NotNull AttributeMap attributeMap) {
+        public PhotoCollection create(@Nullable PhotoElement parent, @NotNull AttributeValueMap values) {
             if (parent != null) {
                 throw new IllegalArgumentException("Collection cannot have a parent");
             }
-            return new PhotoCollection(attributeMap);
+            return new PhotoCollection(values);
         }
 
         @Override
@@ -32,8 +33,8 @@ public enum PhotoKind {
     },
     YEAR {
         @Override
-        public PhotoYear create(@NotNull PhotoElement parent, @NotNull AttributeMap attributeMap) {
-            return new PhotoYear(parent, attributeMap);
+        public PhotoYear create(@NotNull PhotoElement parent, @NotNull AttributeValueMap values) {
+            return new PhotoYear(parent, values);
         }
 
         @Override
@@ -50,8 +51,8 @@ public enum PhotoKind {
             AttributeSet.of(PhotoAlbum.F_NAME, PhotoAlbum.F_MONTH, PhotoAlbum.F_DAY)) {
 
         @Override
-        public PhotoElement create(@NotNull PhotoElement parent, @NotNull AttributeMap attributeMap) {
-            return new PhotoAlbum(parent, attributeMap);
+        public PhotoElement create(@NotNull PhotoElement parent, @NotNull AttributeValueMap values) {
+            return new PhotoAlbum(parent, values);
         }
 
         @Override
@@ -66,8 +67,8 @@ public enum PhotoKind {
     },
     PHOTO(AttributeSet.of(Photo.F_NAME, Photo.F_SIZE), AttributeSet.of(Photo.F_NAME)) {
         @Override
-        public PhotoElement create(@NotNull PhotoElement parent, @NotNull AttributeMap attributeMap) {
-            return new Photo(parent, attributeMap);
+        public PhotoElement create(@NotNull PhotoElement parent, @NotNull AttributeValueMap values) {
+            return new Photo(parent, values);
         }
 
         @Override
@@ -94,7 +95,7 @@ public enum PhotoKind {
         this.unique = unique;
     }
 
-    public abstract PhotoElement create(PhotoElement parent, @NotNull AttributeMap attributeMap);
+    public abstract PhotoElement create(PhotoElement parent, @NotNull AttributeValueMap attributeMap);
 
     public abstract PhotoKind getParent();
 

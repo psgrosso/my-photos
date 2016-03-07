@@ -1,6 +1,6 @@
 package model.photo.element;
 
-import model.attribute.AttributeMap;
+import model.attribute.AttributeValueMap;
 import model.photo.PhotoKind;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,9 +11,9 @@ public final class PhotoYear extends BasePhotoElement {
 
     private final int year;
 
-    public PhotoYear(@NotNull PhotoElement parent, @NotNull AttributeMap attributeMap) {
-        super(PhotoKind.YEAR, attributeMap, parent);
-        String stringYear = attributeMap.get(F_NAME);
+    public PhotoYear(@NotNull PhotoElement parent, @NotNull AttributeValueMap values) {
+        super(parent, PhotoKind.YEAR, values);
+        String stringYear = values.get(F_NAME).getString();
         try {
             int integerYear = Integer.parseInt(stringYear);
             if (integerYear < MIN_YEAR || integerYear > MAX_YEAR) {

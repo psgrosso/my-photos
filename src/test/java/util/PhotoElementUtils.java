@@ -1,7 +1,6 @@
 package util;
 
 
-import model.attribute.AttributeMap;
 import model.photo.element.Photo;
 import model.photo.element.PhotoAlbum;
 import model.photo.element.PhotoCollection;
@@ -19,6 +18,7 @@ import static model.photo.PhotoKind.YEAR;
 
 
 public class PhotoElementUtils {
+    /*
     public static final String COLLECTION_NAME = "collectionName";
     public static final AttributeMap ATTRS_COLLECTION = PhotoCollection.attributeMapFor(COLLECTION_NAME);
 
@@ -88,4 +88,5 @@ public class PhotoElementUtils {
         }
         return result;
     }
+    */
 }

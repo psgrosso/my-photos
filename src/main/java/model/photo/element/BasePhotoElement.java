@@ -1,14 +1,18 @@
 package model.photo.element;
 
-
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import model.attribute.Attribute;
-import model.attribute.AttributeMap;
+import model.attribute.AttributeValueMap;
+import model.attribute.Value;
 import model.photo.PhotoKind;
+import model.photo.identifier.LocalPhotoIdentifier;
+import model.photo.identifier.PhotoIdentifier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -16,18 +20,21 @@ import java.util.TreeMap;
 
 public abstract class BasePhotoElement implements PhotoElement {
     private final PhotoKind kind;
-    private final AttributeMap attributeMap;
+    private final AttributeValueMap values;
     private final PhotoElement parent;
-    private ImmutableMap<PhotoElementIdentifier, PhotoElement> children;
+    private final PhotoIdentifier identifier;
+    private ImmutableMap<LocalPhotoIdentifier, PhotoElement> children;
 
-    public BasePhotoElement(@NotNull PhotoKind kind, @NotNull AttributeMap attributeMap, PhotoElement parent) {
+    public BasePhotoElement(@Nullable PhotoElement parent, @NotNull PhotoKind kind,
+                            @NotNull AttributeValueMap values) {
         // Check all required attributes are present for this kind
-        if (!kind.getRequiredAttributes().equals(attributeMap.getAttributeSet())) {
-            throw new IllegalArgumentException("Not valid attribute map " + attributeMap + " for " + kind);
+        if (!kind.getRequiredAttributes().equals(values.getAttributes())) {
+            throw new IllegalArgumentException("Not valid values " + values + " for " + kind);
         }
         this.parent = parent;
         this.kind = kind;
-        this.attributeMap = attributeMap;
+        this.values = values;
+        identifier = PhotoIdentifier.fromPhotoParent(parent, values);
     }
 
     @Override
@@ -36,8 +43,8 @@ public abstract class BasePhotoElement implements PhotoElement {
     }
 
     @Override
-    public <T> T getAttribute(@NotNull Attribute<T> key) {
-        return attributeMap.get(key);
+    public Value getValue(@NotNull Attribute attribute) {
+        return values.get(attribute);
     }
 
     @Override
@@ -46,23 +53,13 @@ public abstract class BasePhotoElement implements PhotoElement {
     }
 
     @Override
-    public ImmutableList<PhotoElement> getChildren() {
-        return children.values().asList();
-    }
-
-    @Override
-    public PhotoElement getChild(String childId) {
+    public PhotoElement getChild(@NotNull LocalPhotoIdentifier childId) {
         return children.get(childId);
     }
 
     @Override
-    public PhotoElementIdentifier getIdentifier() {
-        return null;
-    }
-
-    @Override
-    public AttributeMap getId() {
-        return null;
+    public PhotoIdentifier getIdentifier() {
+        return identifier;
     }
 
     @Override
@@ -70,41 +67,54 @@ public abstract class BasePhotoElement implements PhotoElement {
         if (this.children != null) {
             throw new UnsupportedOperationException("Children was already set");
         }
-        // Sort children by their id
-        SortedMap<AttributeMap, PhotoElement> sortedChildren = new TreeMap<>();
+        // Sort children by their id so that it's easier to compare PhotoElement families
+        SortedMap<LocalPhotoIdentifier, PhotoElement> sortedChildren = new TreeMap<>();
         for (PhotoElement child : children) {
-            sortedChildren.put(child.getId(), child);
+            sortedChildren.put(child.getIdentifier().getLocalIdentifier(), child);
         }
-        //this.children = ImmutableMap.copyOf(sortedChildren);
+        this.children = ImmutableMap.copyOf(sortedChildren);
     }
 
+    @Override
+    public Iterator<PhotoElement> iterator() {
+        return children.values().iterator();
+    }
+
+    /**
+     * A photo element is equal to another if both have the same:
+     * - kind
+     * - unique identifier (and therefore have the same kind)
+     * - parent identifier (this is also contained in their unique identifiers)
+     * - set of attribute-values
+     *
+     * No equality checks are made on their children, this should be done manually, equals() will only
+     * consider attributes inherent to this photo element exclusively
+     * @param o the object to compare to
+     * @return true if both are equal elements
+     */
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BasePhotoElement that = (BasePhotoElement) o;
 
-        if (kind != that.kind) {
+        if (kind != that.getKind()) {
             return false;
         }
+        /**
+         * For the following tests, we take into account the fact that current LocalIdentifier
+         * is always a subset of photo element values
+         */
         if (parent == null) {
             if (that.parent != null) {
                 return false;
             }
         }
-        else if (that.parent == null) {
+        else if (!parent.getIdentifier().equals(that.parent.getIdentifier())) {
             return false;
         }
-        else {
-            // Both parents are non-null
-            if (!parent.equals(that.parent)) {
-                return false;
-            }
-            if (!parent.getId().equals(that.parent.getId())) {
-                return false;
-            }
-        }
-        return getId().equals(that.getId());
+        // We're done with parent checks, now check the whole value set (which of course includes local identifier)
+        return values.equals(that.values);
     }
 
     @Override
@@ -114,14 +124,15 @@ public abstract class BasePhotoElement implements PhotoElement {
 
     @Override
     public String toString() {
-        String parentId = (parent == null) ? "" : ("parent=" + parent.getId() + ", ");
+        String parentId = (parent == null) ? "" : ("parent=" + parent.getIdentifier().getLocalIdentifier() + ", ");
         return kind + "{" + parentId +
-                "attributeMap=" + attributeMap +
+                "id=" + identifier +
+                "values=" + values +
                 ", children=" + children +
                 '}';
     }
 
-    public static AttributeMap attributeMapFor(@NotNull String name) {
-        return AttributeMap.builderFor(NAME_ATTRIBUTES).with(PhotoElement.F_NAME, name).build();
+    public static AttributeValueMap attributeMapFor(@NotNull String name) {
+        return AttributeValueMap.builderFor(NAME_ATTRIBUTES).with(new Value(PhotoElement.F_NAME, name)).build();
     }
 }

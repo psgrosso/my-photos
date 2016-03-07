@@ -1,25 +1,29 @@
 package model.photo.element;
 
-import com.google.common.collect.ImmutableList;
 import model.attribute.Attribute;
-import model.attribute.AttributeMap;
 import model.attribute.AttributeSet;
+import model.attribute.Value;
 import model.photo.PhotoKind;
+import model.photo.identifier.LocalPhotoIdentifier;
+import model.photo.identifier.PhotoIdentifier;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
 
 
-public interface PhotoElement {
+/**
+ * Interface that represents a photo element
+ * It also behaves as an iterator for its children
+ */
+public interface PhotoElement extends Iterable<PhotoElement> {
     // All photo elements have a name
-    Attribute<String> F_NAME = Attribute.newStringAttribute("name");
+    Attribute F_NAME = Attribute.newStringAttribute("name");
     AttributeSet NAME_ATTRIBUTES = AttributeSet.of(PhotoElement.F_NAME);
 
     PhotoKind getKind();
-    <T> T getAttribute(@NotNull final Attribute<T> key);
+    Value getValue(@NotNull final Attribute key);
     PhotoElement getParent();
-    ImmutableList<PhotoElement> getChildren();
-    PhotoElement getChild(String childId);
+    PhotoElement getChild(@NotNull LocalPhotoIdentifier childId);
 
     /**
      * Sets the children of this element, cannot be set once it was already set or getChildren was first called
@@ -28,14 +32,8 @@ public interface PhotoElement {
     void setChildren(@NotNull Collection<PhotoElement> children);
 
     /**
-     * Returns the AttributeMap subset that uniquely identifies this photo from its siblings
-     * @return the id
-     */
-    AttributeMap getId();
-
-    /**
      * Returns a unique global identifier
      * @return the unique ID
      */
-    PhotoElementIdentifier getIdentifier();
+    PhotoIdentifier getIdentifier();
 }

@@ -1,7 +1,6 @@
 package model.photo.builder;
 
-
-import model.attribute.AttributeMap;
+import model.attribute.AttributeValueMap;
 import model.photo.element.PhotoCollection;
 import model.photo.element.PhotoElement;
 
@@ -11,19 +10,19 @@ import java.util.stream.Collectors;
 
 
 public class PhotoElementBuilder {
-    private AttributeMap attributeMap;
+    private AttributeValueMap values;
     private List<PhotoElementBuilder> children;
 
     /**
      * Creates the builder.
-     * @param attributeMap the photo element attributeMap
+     * @param values the photo element values
      */
-    public PhotoElementBuilder(AttributeMap attributeMap) {
-        this.attributeMap = attributeMap;
+    public PhotoElementBuilder(AttributeValueMap values) {
+        this.values = values;
         children = new LinkedList<>();
     }
 
-    public PhotoElementBuilder addChild(AttributeMap childAttributeMap) {
+    public PhotoElementBuilder addChild(AttributeValueMap childAttributeMap) {
         PhotoElementBuilder child = new PhotoElementBuilder(childAttributeMap);
         children.add(child);
         return child;
@@ -38,8 +37,8 @@ public class PhotoElementBuilder {
     }
 
     private PhotoElement build(PhotoElement parent) {
-        PhotoElement newPhotoElement = (parent == null) ? new PhotoCollection(attributeMap) :
-                                    parent.getKind().getChild().create(parent, attributeMap);
+        PhotoElement newPhotoElement = (parent == null) ? new PhotoCollection(values) :
+                                    parent.getKind().getChild().create(parent, values);
         if (!children.isEmpty()) {
             newPhotoElement.setChildren(
                     children.stream()
