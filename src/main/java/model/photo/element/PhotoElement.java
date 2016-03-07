@@ -13,9 +13,10 @@ import java.util.Collection;
 
 /**
  * Interface that represents a photo element
+ * PhotoElement is comparable to another photo element using their local identifier
  * It also behaves as an iterator for its children
  */
-public interface PhotoElement extends Iterable<PhotoElement> {
+public interface PhotoElement extends Comparable<PhotoElement>, Iterable<PhotoElement> {
     // All photo elements have a name
     Attribute F_NAME = Attribute.newStringAttribute("name");
     AttributeSet NAME_ATTRIBUTES = AttributeSet.of(PhotoElement.F_NAME);

@@ -1,6 +1,5 @@
 package model.photo.element;
 
-import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import model.attribute.Attribute;
 import model.attribute.AttributeValueMap;
