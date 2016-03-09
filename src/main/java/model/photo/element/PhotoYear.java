@@ -1,6 +1,6 @@
 package model.photo.element;
 
-import model.attribute.AttributeValueMap;
+import model.attribute.Values;
 import model.photo.PhotoKind;
 import org.jetbrains.annotations.NotNull;
 
@@ -11,7 +11,7 @@ public final class PhotoYear extends BasePhotoElement {
 
     private final int year;
 
-    public PhotoYear(@NotNull PhotoElement parent, @NotNull AttributeValueMap values) {
+    public PhotoYear(@NotNull PhotoElement parent, @NotNull Values values) {
         super(parent, PhotoKind.YEAR, values);
         String stringYear = values.get(F_NAME).getString();
         try {

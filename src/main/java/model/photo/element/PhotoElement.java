@@ -3,6 +3,7 @@ package model.photo.element;
 import model.attribute.Attribute;
 import model.attribute.AttributeSet;
 import model.attribute.Value;
+import model.attribute.Values;
 import model.photo.PhotoKind;
 import model.photo.identifier.LocalPhotoIdentifier;
 import model.photo.identifier.PhotoIdentifier;

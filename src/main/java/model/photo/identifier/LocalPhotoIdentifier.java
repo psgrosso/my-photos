@@ -1,7 +1,7 @@
 package model.photo.identifier;
 
 
-import model.attribute.AttributeValueMap;
+import model.attribute.Values;
 import model.photo.PhotoKind;
 import org.jetbrains.annotations.NotNull;
 
@@ -14,11 +14,15 @@ import java.util.Objects;
  */
 public final class LocalPhotoIdentifier implements Comparable<LocalPhotoIdentifier> {
     private final PhotoKind kind;
-    private final AttributeValueMap attributes;
+    private final Values attributes;
 
-    public LocalPhotoIdentifier(@NotNull PhotoKind kind, @NotNull AttributeValueMap attributes) {
+    public LocalPhotoIdentifier(@NotNull PhotoKind kind, @NotNull Values attributes) {
         this.kind = kind;
         this.attributes = attributes;
+    }
+
+    public PhotoKind getKind() {
+        return kind;
     }
 
     @Override

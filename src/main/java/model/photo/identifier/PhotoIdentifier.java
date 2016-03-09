@@ -4,7 +4,7 @@ package model.photo.identifier;
 import com.google.common.collect.ImmutableList;
 import model.attribute.Attribute;
 import model.attribute.AttributeSet;
-import model.attribute.AttributeValueMap;
+import model.attribute.Values;
 import model.photo.PhotoKind;
 import model.photo.element.PhotoElement;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public final class PhotoIdentifier implements Iterable<LocalPhotoIdentifier> {
     private final LocalPhotoIdentifier localIdentifier;
 
 
-    private PhotoIdentifier(@Nullable PhotoElement parent, @NotNull AttributeValueMap values) {
+    private PhotoIdentifier(@Nullable PhotoElement parent, @NotNull Values values) {
         final PhotoKind kind;
         ImmutableList.Builder<LocalPhotoIdentifier> builder = ImmutableList.builder();
 
@@ -41,7 +41,15 @@ public final class PhotoIdentifier implements Iterable<LocalPhotoIdentifier> {
     }
 
     /**
-     * Returns the local identifier for the photo element this identifier was created from
+     * Returns the kind of the photo element this identifier represents
+     * @return the photo kind
+     */
+    public PhotoKind getKind() {
+        return localIdentifier.getKind();
+    }
+
+    /**
+     * Returns the local identifier of the photo element this identifier was created from
      * @return the related local photo identifier
      */
     public LocalPhotoIdentifier getLocalIdentifier() {
@@ -66,14 +74,14 @@ public final class PhotoIdentifier implements Iterable<LocalPhotoIdentifier> {
         return Objects.hash(identifiers);
     }
 
-    public static PhotoIdentifier fromPhotoParent(@Nullable PhotoElement parent, @NotNull AttributeValueMap values) {
+    public static PhotoIdentifier fromPhotoParent(@Nullable PhotoElement parent, @NotNull Values values) {
         return new PhotoIdentifier(parent, values);
     }
 
     private static LocalPhotoIdentifier calculateLocalIdentifier(
-                                    @NotNull PhotoKind kind, @NotNull AttributeValueMap values) {
+                                    @NotNull PhotoKind kind, @NotNull Values values) {
         AttributeSet uniqueAttributes = kind.getUniqueAttributes();
-        AttributeValueMap.Builder builder = AttributeValueMap.builderFor(uniqueAttributes);
+        Values.Builder builder = Values.builderFor(uniqueAttributes);
         for (Attribute attribute : uniqueAttributes) {
             builder.with(values.get(attribute));
         }

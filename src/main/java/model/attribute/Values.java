@@ -7,11 +7,11 @@ import org.jetbrains.annotations.NotNull;
 /**
  * An immutable collection of attributes (attribute (type, name) - value)
  */
-public class AttributeValueMap implements Comparable<AttributeValueMap> {
+public class Values implements Comparable<Values> {
     private final AttributeSet attributes;
     private final ImmutableMap<Attribute, Value> values;
 
-    private AttributeValueMap(@NotNull AttributeSet attributes, @NotNull ImmutableMap<Attribute, Value> values) {
+    private Values(@NotNull AttributeSet attributes, @NotNull ImmutableMap<Attribute, Value> values) {
         if (attributes.size() != values.size()) {
             throw new IllegalArgumentException(values + " is not valid for " + attributes);
         }
@@ -30,7 +30,7 @@ public class AttributeValueMap implements Comparable<AttributeValueMap> {
         return attributes;
     }
 
-    public AttributeValueMap subset(@NotNull AttributeSet attributeSet) {
+    public Values subset(@NotNull AttributeSet attributeSet) {
         if (!attributes.contains(attributeSet)) {
             throw new IllegalArgumentException("Invalid attribute set: " + attributeSet);
         }
@@ -46,7 +46,7 @@ public class AttributeValueMap implements Comparable<AttributeValueMap> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        AttributeValueMap that = (AttributeValueMap) o;
+        Values that = (Values) o;
 
         return values.equals(that.values);
     }
@@ -57,7 +57,7 @@ public class AttributeValueMap implements Comparable<AttributeValueMap> {
     }
 
     @Override
-    public int compareTo(@NotNull AttributeValueMap that) {
+    public int compareTo(@NotNull Values that) {
         if (!attributes.equals(that.attributes)) {
             throw new IllegalArgumentException("Incompatible attribute set: " + that.attributes);
         }
@@ -72,7 +72,7 @@ public class AttributeValueMap implements Comparable<AttributeValueMap> {
 
     @Override
     public String toString() {
-        return "AttributeValueMap{" +
+        return "Values{" +
                 "attributes=" + attributes +
                 ", values=" + values +
                 '}';
@@ -99,8 +99,8 @@ public class AttributeValueMap implements Comparable<AttributeValueMap> {
             return this;
         }
 
-        public AttributeValueMap build() {
-            return new AttributeValueMap(requiredAttributes, builder.build());
+        public Values build() {
+            return new Values(requiredAttributes, builder.build());
         }
     }
 }

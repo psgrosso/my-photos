@@ -2,7 +2,7 @@ package model.photo.element;
 
 import com.google.common.collect.ImmutableMap;
 import model.attribute.Attribute;
-import model.attribute.AttributeValueMap;
+import model.attribute.Values;
 import model.attribute.Value;
 import model.photo.PhotoKind;
 import model.photo.identifier.LocalPhotoIdentifier;
@@ -19,13 +19,13 @@ import java.util.TreeMap;
 
 public abstract class BasePhotoElement implements PhotoElement {
     private final PhotoKind kind;
-    private final AttributeValueMap values;
+    private final Values values;
     private final PhotoElement parent;
     private final PhotoIdentifier identifier;
     private ImmutableMap<LocalPhotoIdentifier, PhotoElement> children;
 
     public BasePhotoElement(@Nullable PhotoElement parent, @NotNull PhotoKind kind,
-                            @NotNull AttributeValueMap values) {
+                            @NotNull Values values) {
         // Check all required attributes are present for this kind
         if (!kind.getRequiredAttributes().equals(values.getAttributes())) {
             throw new IllegalArgumentException("Not valid values " + values + " for " + kind);
@@ -76,7 +76,15 @@ public abstract class BasePhotoElement implements PhotoElement {
 
     @Override
     public Iterator<PhotoElement> iterator() {
+        if (children == null) {
+            children = ImmutableMap.of();
+        }
         return children.values().iterator();
+    }
+
+    @Override
+    public int compareTo(@NotNull PhotoElement photoElement) {
+        return identifier.getLocalIdentifier().compareTo(photoElement.getIdentifier().getLocalIdentifier());
     }
 
     /**
@@ -131,7 +139,7 @@ public abstract class BasePhotoElement implements PhotoElement {
                 '}';
     }
 
-    public static AttributeValueMap attributeMapFor(@NotNull String name) {
-        return AttributeValueMap.builderFor(NAME_ATTRIBUTES).with(new Value(PhotoElement.F_NAME, name)).build();
+    public static Values attributeMapFor(@NotNull String name) {
+        return Values.builderFor(NAME_ATTRIBUTES).with(new Value(PhotoElement.F_NAME, name)).build();
     }
 }

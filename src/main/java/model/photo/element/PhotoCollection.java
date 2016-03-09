@@ -1,6 +1,6 @@
 package model.photo.element;
 
-import model.attribute.AttributeValueMap;
+import model.attribute.Values;
 import model.photo.PhotoKind;
 import model.photo.identifier.LocalPhotoIdentifier;
 import model.photo.identifier.PhotoIdentifier;
@@ -9,7 +9,7 @@ import org.jetbrains.annotations.NotNull;
 
 public final class PhotoCollection extends BasePhotoElement {
 
-    public PhotoCollection(@NotNull AttributeValueMap values) {
+    public PhotoCollection(@NotNull Values values) {
         super(null, PhotoKind.COLLECTION, values);
     }
 

@@ -1,7 +1,7 @@
 package model.photo;
 
 import model.attribute.AttributeSet;
-import model.attribute.AttributeValueMap;
+import model.attribute.Values;
 import model.photo.element.Photo;
 import model.photo.element.PhotoAlbum;
 import model.photo.element.PhotoCollection;
@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 public enum PhotoKind {
     COLLECTION {
         @Override
-        public PhotoCollection create(@Nullable PhotoElement parent, @NotNull AttributeValueMap values) {
+        public PhotoCollection create(@Nullable PhotoElement parent, @NotNull Values values) {
             if (parent != null) {
                 throw new IllegalArgumentException("Collection cannot have a parent");
             }
@@ -33,7 +33,7 @@ public enum PhotoKind {
     },
     YEAR {
         @Override
-        public PhotoYear create(@NotNull PhotoElement parent, @NotNull AttributeValueMap values) {
+        public PhotoYear create(@NotNull PhotoElement parent, @NotNull Values values) {
             return new PhotoYear(parent, values);
         }
 
@@ -51,7 +51,7 @@ public enum PhotoKind {
             AttributeSet.of(PhotoAlbum.F_NAME, PhotoAlbum.F_MONTH, PhotoAlbum.F_DAY)) {
 
         @Override
-        public PhotoElement create(@NotNull PhotoElement parent, @NotNull AttributeValueMap values) {
+        public PhotoElement create(@NotNull PhotoElement parent, @NotNull Values values) {
             return new PhotoAlbum(parent, values);
         }
 
@@ -67,7 +67,7 @@ public enum PhotoKind {
     },
     PHOTO(AttributeSet.of(Photo.F_NAME, Photo.F_SIZE), AttributeSet.of(Photo.F_NAME)) {
         @Override
-        public PhotoElement create(@NotNull PhotoElement parent, @NotNull AttributeValueMap values) {
+        public PhotoElement create(@NotNull PhotoElement parent, @NotNull Values values) {
             return new Photo(parent, values);
         }
 
@@ -95,7 +95,7 @@ public enum PhotoKind {
         this.unique = unique;
     }
 
-    public abstract PhotoElement create(PhotoElement parent, @NotNull AttributeValueMap attributeMap);
+    public abstract PhotoElement create(PhotoElement parent, @NotNull Values values);
 
     public abstract PhotoKind getParent();
 
