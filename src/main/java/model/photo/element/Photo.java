@@ -17,7 +17,7 @@ public final class Photo extends BasePhotoElement {
         super(parent, PhotoKind.PHOTO, attributeMap);
     }
 
-    public static Values attributeMapFor(String name, long size) {
+    public static Values valuesFor(String name, long size) {
         return Values.builderFor(PhotoKind.PHOTO.getRequiredAttributes())
                             .with(new Value(F_NAME, name))
                             .with(new Value(F_SIZE, size))

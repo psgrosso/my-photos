@@ -16,7 +16,7 @@ public final class PhotoAlbum extends BasePhotoElement {
         super(parent, PhotoKind.ALBUM, values);
     }
 
-    public static Values attributeMapFor(String name, int month, int day) {
+    public static Values valuesFor(String name, int month, int day) {
         return Values.builderFor(PhotoKind.ALBUM.getRequiredAttributes())
                             .with(new Value(F_NAME, name))
                             .with(new Value(F_MONTH, month))

@@ -36,7 +36,7 @@ public final class PhotoIdentifier implements Iterable<LocalPhotoIdentifier> {
             kind = parent.getKind().getChild();
             builder.addAll(parent.getIdentifier());
         }
-        localIdentifier = calculateLocalIdentifier(kind, values);
+        localIdentifier = new LocalPhotoIdentifier(kind, values.subset(kind.getUniqueAttributes()));
         identifiers = builder.add(localIdentifier).build();
     }
 
@@ -76,15 +76,5 @@ public final class PhotoIdentifier implements Iterable<LocalPhotoIdentifier> {
 
     public static PhotoIdentifier fromPhotoParent(@Nullable PhotoElement parent, @NotNull Values values) {
         return new PhotoIdentifier(parent, values);
-    }
-
-    private static LocalPhotoIdentifier calculateLocalIdentifier(
-                                    @NotNull PhotoKind kind, @NotNull Values values) {
-        AttributeSet uniqueAttributes = kind.getUniqueAttributes();
-        Values.Builder builder = Values.builderFor(uniqueAttributes);
-        for (Attribute attribute : uniqueAttributes) {
-            builder.with(values.get(attribute));
-        }
-        return new LocalPhotoIdentifier(kind, builder.build());
     }
 }
