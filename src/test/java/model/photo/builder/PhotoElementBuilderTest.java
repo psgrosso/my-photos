@@ -3,6 +3,9 @@ package model.photo.builder;
 
 public class PhotoElementBuilderTest {
 /*
+
+TODO test children are sorted properly
+
     @Test
     public void testHappyPath() {
         PhotoElementBuilder builder = new PhotoElementBuilder(PhotoElementUtils.ATTRS_COLLECTION);

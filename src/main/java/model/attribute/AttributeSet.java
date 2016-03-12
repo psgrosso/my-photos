@@ -10,6 +10,9 @@ import java.util.Iterator;
  * A set of attribute elements
  * It implements an iterable of the attributes it contains.  It will iterate deterministically: in the
  * same order in which the attribute set was created.
+ *
+ * Note: the order DOES matter, two attribute sets containung the same attributes will fail if they are
+ * given in different order
  */
 public final class AttributeSet implements Iterable<Attribute> {
     private final ImmutableSet<Attribute> attributeSet;
@@ -53,7 +56,18 @@ public final class AttributeSet implements Iterable<Attribute> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         AttributeSet that = (AttributeSet) o;
-        return attributeSet.equals(that.attributeSet);
+
+        // Try to fail fast
+        if (hashCode != that.hashCode || attributeSet.size() != that.attributeSet.size()) {
+            return false;
+        }
+        Iterator<Attribute> thatIterator = that.iterator();
+        for (Attribute attribute : attributeSet) {
+            if (!attribute.equals(thatIterator.next())) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @Override

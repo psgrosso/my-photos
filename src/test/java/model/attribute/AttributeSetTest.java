@@ -5,6 +5,8 @@ import static org.testng.AssertJUnit.*;
 
 import org.testng.annotations.Test;
 
+import java.util.Iterator;
+
 public class AttributeSetTest {
     private static final String STRING_NAME1 = "str-name1";
     private static final Attribute stringAttribute1 = Attribute.newStringAttribute(STRING_NAME1);
@@ -30,10 +32,6 @@ public class AttributeSetTest {
         // Test contains() with attribute set
         assertTrue(attributeSet.contains(sameAttributeSet));
         assertEquals(attributeSet, sameAttributeSet);
-
-        for (Attribute attribute : attributeSet) {
-
-        }
     }
 
     @Test
@@ -42,13 +40,21 @@ public class AttributeSetTest {
         Attribute attribute1 = Attribute.newIntegerAttribute(INTEGER_NAME1);
         Attribute attribute2 = Attribute.newStringAttribute(STRING_NAME2);
 
-        // Order shouldn't matter
+        // Order DOES matter
         AttributeSet sameAttributeSet = AttributeSet.of(attribute2, attribute1);
+        System.out.println(attributeSet.hashCode() + " " + sameAttributeSet.hashCode());
+
+        assertFalse(attributeSet.equals(sameAttributeSet));
 
         assertEquals(2, attributeSet.size());
         assertTrue(attributeSet.contains(attribute1));
         assertTrue(attributeSet.contains(attribute2));
-        assertEquals(attributeSet, sameAttributeSet);
+
+        // Test iterator order
+        Iterator<Attribute> iterator = attributeSet.iterator();
+        assertEquals(attribute1, iterator.next());
+        assertEquals(attribute2, iterator.next());
+        assertFalse(iterator.hasNext());
     }
 
     @Test
@@ -58,13 +64,20 @@ public class AttributeSetTest {
         Attribute attribute2 = Attribute.newStringAttribute(STRING_NAME2);
         Attribute attribute3 = Attribute.newStringAttribute(STRING_NAME1);
 
-        // Order shouldn't matter
+        // Order DOES matter
         AttributeSet sameAttributeSet = AttributeSet.of(attribute2, attribute1, attribute3);
 
         assertEquals(3, attributeSet.size());
         assertTrue(attributeSet.contains(attribute1));
         assertTrue(attributeSet.contains(attribute2));
         assertTrue(attributeSet.contains(attribute3));
-        assertEquals(attributeSet, sameAttributeSet);
+        assertFalse(attributeSet.equals(sameAttributeSet));
+
+        // Test iterator order
+        Iterator<Attribute> iterator = attributeSet.iterator();
+        assertEquals(attribute1, iterator.next());
+        assertEquals(attribute2, iterator.next());
+        assertEquals(attribute3, iterator.next());
+        assertFalse(iterator.hasNext());
     }
 }

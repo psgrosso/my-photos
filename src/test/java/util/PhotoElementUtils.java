@@ -1,6 +1,10 @@
 package util;
 
 
+import model.attribute.Attribute;
+import model.attribute.AttributeSet;
+import model.attribute.Value;
+import model.attribute.Values;
 import model.photo.element.Photo;
 import model.photo.element.PhotoAlbum;
 import model.photo.element.PhotoCollection;
@@ -18,6 +22,69 @@ import static model.photo.PhotoKind.YEAR;
 
 
 public class PhotoElementUtils {
+    public static Values valuesFrom(Object ... objects) {
+        Value value1, value2 = null, value3 = null;
+
+        value1 = newValue(objects[0], 1);
+        if (objects.length > 1) {
+            value2 = newValue(objects[1], 2);
+        }
+        if (objects.length > 2) {
+            value3 = newValue(objects[2], 3);
+        }
+        if (objects.length == 1) {
+            return Values.builderFor(AttributeSet.of(value1.getAttribute())).with(value1).build();
+        }
+        if (objects.length == 2) {
+            return Values.builderFor(AttributeSet.of(value1.getAttribute(), value2.getAttribute()))
+                    .with(value1).with(value2).build();
+        }
+        return Values.builderFor(AttributeSet.of(value1.getAttribute(), value2.getAttribute(), value3.getAttribute()))
+                .with(value1).with(value2).with(value3).build();
+    }
+
+    public static AttributeSet setFrom(Object ... objects) {
+        if (objects.length == 1) {
+            return AttributeSet.of(newAttribute(objects[0], 1));
+        }
+        if (objects.length == 2) {
+            return AttributeSet.of(newAttribute(objects[0], 1), newAttribute(objects[1], 2));
+        }
+        return AttributeSet.of(newAttribute(objects[0], 1), newAttribute(objects[1], 2), newAttribute(objects[2], 3));
+    }
+
+    public static Value newValue(Object value, int counter) {
+        if (value instanceof String) {
+            return new Value(stringAttribute(counter), (String) value);
+        }
+        if (value instanceof Integer) {
+            return new Value(integerAttribute(counter), (Integer) value);
+        }
+        return new Value(longAttribute(counter), (Long) value);
+    }
+
+    public static Attribute newAttribute(Object value, int counter) {
+        if (value instanceof String) {
+            return stringAttribute(counter);
+        }
+        if (value instanceof Integer) {
+            return integerAttribute(counter);
+        }
+        return longAttribute(counter);
+    }
+
+    public static Attribute stringAttribute(int counter) {
+        return Attribute.newStringAttribute("string" + counter);
+    }
+
+    public static Attribute integerAttribute(int counter) {
+        return Attribute.newIntegerAttribute("integer" + counter);
+    }
+
+    public static Attribute longAttribute(int counter) {
+        return Attribute.newLongAttribute("long" + counter);
+    }
+
     /*
     public static final String COLLECTION_NAME = "collectionName";
     public static final AttributeMap ATTRS_COLLECTION = PhotoCollection.attributeMapFor(COLLECTION_NAME);

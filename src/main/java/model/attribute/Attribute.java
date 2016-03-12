@@ -11,10 +11,13 @@ import java.util.Objects;
 public final class Attribute {
     private final Type type;
     private final String name;
+    // Pre-calculated hash for equals improvement
+    private final int hash;
 
     private Attribute(@NotNull final Type type, @NotNull final String name) {
         this.type = type;
         this.name = name;
+        hash = Objects.hash(type, name);
     }
 
     public String getName() {
@@ -32,12 +35,13 @@ public final class Attribute {
 
         Attribute attribute = (Attribute) o;
 
-        return type == attribute.type && name.equals(attribute.name);
+        // Short-circuit equals for better performance (fail fast)
+        return type == attribute.type && hash == attribute.hash && name.equals(attribute.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, name);
+        return hash;
     }
 
     @Override
