@@ -2,6 +2,7 @@ package model.photo.element;
 
 import com.google.common.collect.ImmutableMap;
 import model.attribute.Attribute;
+import model.attribute.AttributeSet;
 import model.attribute.Values;
 import model.attribute.Value;
 import model.photo.PhotoKind;
@@ -75,6 +76,11 @@ public abstract class BasePhotoElement implements PhotoElement {
     }
 
     @Override
+    public String getName() {
+        return values.get(F_NAME).getString();
+    }
+
+    @Override
     public Iterator<PhotoElement> iterator() {
         if (children == null) {
             children = ImmutableMap.of();
@@ -137,9 +143,5 @@ public abstract class BasePhotoElement implements PhotoElement {
                 "values=" + values +
                 ", children=" + children +
                 '}';
-    }
-
-    public static Values attributeMapFor(@NotNull String name) {
-        return Values.builderFor(NAME_ATTRIBUTES).with(new Value(PhotoElement.F_NAME, name)).build();
     }
 }

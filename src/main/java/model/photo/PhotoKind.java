@@ -1,6 +1,7 @@
 package model.photo;
 
 import model.attribute.AttributeSet;
+import model.attribute.Value;
 import model.attribute.Values;
 import model.photo.element.Photo;
 import model.photo.element.PhotoAlbum;
@@ -115,5 +116,9 @@ public enum PhotoKind {
      */
     public AttributeSet getRequiredAttributes() {
         return required;
+    }
+
+    public Values.Builder valuesBuilderFor(@NotNull String name) {
+        return Values.builderFor(required).with(new Value(PhotoElement.F_NAME, name));
     }
 }

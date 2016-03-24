@@ -1,11 +1,9 @@
 package model.attribute;
 
-import static util.PhotoElementUtils.*;
-
 import org.testng.annotations.Test;
 
-
 import static org.testng.AssertJUnit.*;
+import static util.PhotoElementUtils.*;
 
 
 

@@ -3,7 +3,6 @@ package model.photo.element;
 import model.attribute.Attribute;
 import model.attribute.AttributeSet;
 import model.attribute.Value;
-import model.attribute.Values;
 import model.photo.PhotoKind;
 import model.photo.identifier.LocalPhotoIdentifier;
 import model.photo.identifier.PhotoIdentifier;
@@ -26,6 +25,14 @@ public interface PhotoElement extends Comparable<PhotoElement>, Iterable<PhotoEl
     Value getValue(@NotNull final Attribute key);
     PhotoElement getParent();
     PhotoElement getChild(@NotNull LocalPhotoIdentifier childId);
+
+    /**
+     * Since all photo elements have name, this is just a shortcut to get it:
+     * It's equivalent to:
+     *      getValue(F_NAME).getString();
+     * @return the name of this photo element
+     */
+    String getName();
 
     /**
      * Sets the children of this element, cannot be set once it was already set or getChildren was first called

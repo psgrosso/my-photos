@@ -10,13 +10,17 @@ import org.jetbrains.annotations.NotNull;
 public class Values implements Comparable<Values> {
     private final AttributeSet attributes;
     private final ImmutableMap<Attribute, Value> values;
+    // Pre-calculated hash for equals improvement, it can be done this way since this object is immutable
+    private final int hash;
 
     private Values(@NotNull AttributeSet attributes, @NotNull ImmutableMap<Attribute, Value> values) {
+        // Pending check that was not performed on the Builder
         if (attributes.size() != values.size()) {
             throw new IllegalArgumentException(values + " is not valid for " + attributes);
         }
         this.attributes = attributes;
         this.values = values;
+        hash = (17 + attributes.hashCode()) * 31 + values.hashCode();
     }
 
     public Value get(@NotNull Attribute attribute) {
@@ -34,11 +38,11 @@ public class Values implements Comparable<Values> {
         if (!attributes.contains(attributeSet)) {
             throw new IllegalArgumentException("Invalid attribute set: " + attributeSet);
         }
-        Builder builder1 = builderFor(attributeSet);
+        Builder builder = builderFor(attributeSet);
         for (Attribute attribute : attributeSet) {
-            builder1.with(values.get(attribute));
+            builder.with(values.get(attribute));
         }
-        return builder1.build();
+        return builder.build();
     }
 
     @Override
@@ -47,13 +51,13 @@ public class Values implements Comparable<Values> {
         if (o == null || getClass() != o.getClass()) return false;
 
         Values that = (Values) o;
-
-        return values.equals(that.values);
+        // Fail quick
+        return hash == that.hash && values.equals(that.values);
     }
 
     @Override
     public int hashCode() {
-        return values.hashCode();
+        return hash;
     }
 
     @Override

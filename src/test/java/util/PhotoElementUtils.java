@@ -7,21 +7,34 @@ import model.attribute.Value;
 import model.attribute.Values;
 import model.photo.element.Photo;
 import model.photo.element.PhotoAlbum;
-import model.photo.element.PhotoCollection;
 import model.photo.element.PhotoElement;
-import model.photo.element.PhotoYear;
 
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Random;
 
-import static model.photo.PhotoKind.ALBUM;
-import static model.photo.PhotoKind.COLLECTION;
-import static model.photo.PhotoKind.PHOTO;
-import static model.photo.PhotoKind.YEAR;
+import static model.photo.PhotoKind.*;
 
 
 public class PhotoElementUtils {
+    public static final String COLLECTION_NAME = "collectionName";
+    public static final Values COLLECTION_VALUES = COLLECTION.valuesBuilderFor(COLLECTION_NAME).build();
+    public static final int YEAR_NAME = 1973;
+    public static final Values YEAR_VALUES = YEAR.valuesBuilderFor(String.valueOf(YEAR_NAME)).build();
+    public static final String ALBUM_NAME = "Pablo's Birthday";
+    public static final int ALBUM_MONTH = 12;
+    public static final int ALBUM_DAY = 2;
+    public static final Values ALBUM_VALUES = ALBUM
+                                    .valuesBuilderFor(ALBUM_NAME)
+                                    .with(new Value(PhotoAlbum.F_MONTH, ALBUM_MONTH))
+                                    .with(new Value(PhotoAlbum.F_DAY, ALBUM_DAY))
+                                    .build();
+    public static final String PHOTO_NAME = "test-photo";
+    public static final long PHOTO_SIZE = 1234567890L;
+    public static final Values PHOTO_VALUES = Photo.valuesFor(PHOTO_NAME, PHOTO_SIZE);
+
+    private static Random random = new Random();
+    private static int photoCount;
+
+
     public static Values valuesFrom(Object ... objects) {
         Value value1, value2 = null, value3 = null;
 
@@ -85,17 +98,49 @@ public class PhotoElementUtils {
         return Attribute.newLongAttribute("long" + counter);
     }
 
+    public static PhotoElement createCollection() {
+        return COLLECTION.create(null, COLLECTION_VALUES);
+    }
+
+    public static PhotoElement createYear() {
+        return createYear(YEAR_NAME);
+    }
+
+    public static PhotoElement createYear(int year) {
+        return createYear(createCollection(), year);
+    }
+
+    public static PhotoElement createYear(PhotoElement collection, int year) {
+        return YEAR.create(collection, YEAR.valuesBuilderFor(String.valueOf(year)).build());
+    }
+
+    public static PhotoElement createAlbum() {
+        return createAlbum(createYear(), ALBUM_MONTH, ALBUM_DAY, ALBUM_NAME);
+    }
+
+    public static PhotoElement createAlbum(PhotoElement year, int month, int date, String name) {
+        return ALBUM.create(year, PhotoAlbum.valuesFor(name, month, date));
+    }
+
+    public static PhotoElement createPhoto() {
+        return new Photo(createAlbum(), PHOTO_VALUES);
+    }
+
+    public static PhotoElement createPhoto(PhotoElement album) {
+        return createPhoto(album, String.format("photo%04d", photoCount++), random.nextLong());
+    }
+
+    public static PhotoElement createPhoto(PhotoElement album, String name, long size) {
+        return new Photo(album, Photo.valuesFor(name, size));
+    }
+
+
     /*
-    public static final String COLLECTION_NAME = "collectionName";
+
     public static final AttributeMap ATTRS_COLLECTION = PhotoCollection.attributeMapFor(COLLECTION_NAME);
 
-    public static final int YEAR_VALUE = 1973;
-    public static final String YEAR_NAME = String.valueOf(YEAR_VALUE);
     public static final AttributeMap ATTRS_YEAR = PhotoYear.attributeMapFor(YEAR_NAME);
 
-    public static final String ALBUM_NAME = "Birthday";
-    public static final int ALBUM_MONTH = 12;
-    public static final int ALBUM_DAY = 2;
     public static final AttributeMap ATTRS_ALBUM = PhotoAlbum.attributeMapFor(ALBUM_NAME, ALBUM_MONTH, ALBUM_DAY);
 
     public static final String PHOTO_NAME = "pabs01.jpg";
@@ -105,20 +150,10 @@ public class PhotoElementUtils {
     private static int yearCount = 1973;
     private static int albumCount = 1;
     private static int photoCount = 1;
-    private static Random random = new Random();
 
 
-    public static PhotoElement createCollection() {
-        return COLLECTION.create(null, ATTRS_COLLECTION);
-    }
 
-    public static PhotoElement createYear() {
-        return YEAR.create(createCollection(), ATTRS_YEAR);
-    }
 
-    public static PhotoElement createAlbum() {
-        return ALBUM.create(createYear(), ATTRS_ALBUM);
-    }
 
     public static PhotoElement createPhoto() {
         return PHOTO.create(createAlbum(), ATTRS_PHOTO);
@@ -146,14 +181,5 @@ public class PhotoElementUtils {
         return result;
     }
 
-    public static List<AttributeMap> createPhotoAttributes(int count) {
-        List<AttributeMap> result = new LinkedList<>();
-        for (int i = 0; i < count; i++) {
-            AttributeMap attributeMap = Photo.attributeMapFor(
-                    String.format("photo%04d", photoCount++), random.nextLong());
-            result.add(attributeMap);
-        }
-        return result;
-    }
     */
 }

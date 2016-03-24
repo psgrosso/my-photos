@@ -1,79 +1,92 @@
 package model.photo;
 
-public class PhotoKindTest {
-/*
-    public static final Attribute ATTR_INVALID = Attribute.newIntegerAttribute("invalid");
-    private static final AttributeMap ATTRS_INVALID =
-            AttributeMap.builderFor(AttributeSet.of(ATTR_INVALID)).with(ATTR_INVALID, 1026).build();
+import model.attribute.Attribute;
+import model.attribute.AttributeSet;
+import model.attribute.Value;
+import model.attribute.Values;
+import model.photo.element.Photo;
+import model.photo.element.PhotoAlbum;
+import model.photo.element.PhotoCollection;
+import model.photo.element.PhotoElement;
+import model.photo.element.PhotoYear;
+import org.testng.annotations.Test;
 
-    @Test(expectedExceptions = UnsupportedOperationException.class)
-    public void testCollectionGetParent() {
-        COLLECTION.getParent();
-    }
+import static model.photo.PhotoKind.*;
+import static util.PhotoElementUtils.*;
+import static org.testng.AssertJUnit.*;
+
+public class PhotoKindTest {
+    private static final Attribute ATTR_INVALID = Attribute.newIntegerAttribute("invalid-attr");
+    private static final Values VALUES_INVALID =
+            Values.builderFor(AttributeSet.of(ATTR_INVALID)).with(new Value(ATTR_INVALID, 1026)).build();
 
     @Test
     public void testCollection() {
         assertEquals(YEAR, COLLECTION.getChild());
+        // createCollection uses PhotoKind.create()
         PhotoElement collection = createCollection();
 
         assertNotNull(collection);
         assertEquals(PhotoCollection.class, collection.getClass());
         assertEquals(COLLECTION, collection.getKind());
-        assertEquals(COLLECTION_NAME, collection.getAttribute(PhotoCollection.F_NAME));
-        assertEquals(collection, new PhotoCollection(PhotoElementUtils.ATTRS_COLLECTION));
+        assertNull(collection.getParent());
+        assertEquals(COLLECTION_NAME, collection.getValue(PhotoCollection.F_NAME).getString());
+        assertEquals(COLLECTION_NAME, collection.getName());
+        assertEquals(collection, new PhotoCollection(COLLECTION_VALUES));
+    }
+
+    @Test(expectedExceptions = UnsupportedOperationException.class)
+    public void testCollectionGetParent() {
+        // Collections don't have parents
+        COLLECTION.getParent();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testNotNullParent() {
-        COLLECTION.create(createCollection(), ATTRS_COLLECTION);
-    }
-
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void testCollectionInvalidAttributes() {
-        COLLECTION.create(null, ATTRS_INVALID);
+    public void testInvalidValues() {
+        COLLECTION.create(createCollection(), VALUES_INVALID);
     }
 
     @Test
     public void testYear() {
         assertEquals(COLLECTION, YEAR.getParent());
         assertEquals(ALBUM, YEAR.getChild());
-        PhotoElement collection = createCollection();
-        PhotoElement year = YEAR.create(collection, ATTRS_YEAR);
+        PhotoElement year = createYear();
 
         assertNotNull(year);
         assertEquals(PhotoYear.class, year.getClass());
         assertEquals(YEAR, year.getKind());
-        assertEquals(String.valueOf(YEAR_VALUE), year.getAttribute(PhotoYear.F_NAME));
-        assertEquals(YEAR_VALUE, (int) ((PhotoYear) year).getYear());
+        assertEquals(String.valueOf(YEAR_NAME), year.getValue(PhotoYear.F_NAME).getString());
+        assertEquals(YEAR_NAME, ((PhotoYear) year).getYear());
+        assertEquals(createCollection(), year.getParent());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testYearNullParent() {
-        YEAR.create(null, ATTRS_YEAR);
+        YEAR.create(null, YEAR_VALUES);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testYearInvalidNumber() {
-        YEAR.create(createAlbum(), PhotoYear.attributeMapFor("invalid-number"));
+        YEAR.create(createCollection(), YEAR.valuesBuilderFor("invalid-number").build());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testYearTooSmall() {
-        YEAR.create(createAlbum(), PhotoYear.attributeMapFor("1899"));
+        YEAR.create(createCollection(), YEAR.valuesBuilderFor("1899").build());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testYearTooLarge() {
-        YEAR.create(createAlbum(), PhotoYear.attributeMapFor("2101"));
+        YEAR.create(createCollection(), YEAR.valuesBuilderFor("2101").build());
     }
 
     @Test
-    public void testValidYears() {
-        YEAR.create(createAlbum(), PhotoYear.attributeMapFor("1900"));
-        YEAR.create(createAlbum(), PhotoYear.attributeMapFor("1973"));
-        YEAR.create(createAlbum(), PhotoYear.attributeMapFor("1978"));
-        YEAR.create(createAlbum(), PhotoYear.attributeMapFor("2016"));
-        YEAR.create(createAlbum(), PhotoYear.attributeMapFor("2099"));
+    public void testSomeValidYears() {
+        YEAR.create(createCollection(), YEAR.valuesBuilderFor("1900").build());
+        YEAR.create(createCollection(), YEAR.valuesBuilderFor("1934").build());
+        YEAR.create(createCollection(), YEAR.valuesBuilderFor("1973").build());
+        YEAR.create(createCollection(), YEAR.valuesBuilderFor("2016").build());
+        YEAR.create(createCollection(), YEAR.valuesBuilderFor("2099").build());
     }
 
     @Test
@@ -84,15 +97,16 @@ public class PhotoKindTest {
 
         assertNotNull(album);
         assertEquals(PhotoAlbum.class, album.getClass());
+        assertEquals(createYear(), album.getParent());
         assertEquals(ALBUM, album.getKind());
-        assertEquals(ALBUM_NAME, album.getAttribute(PhotoAlbum.F_NAME));
-        assertEquals(ALBUM_MONTH, (int) album.getAttribute(PhotoAlbum.F_MONTH));
-        assertEquals(ALBUM_DAY, (int) album.getAttribute(PhotoAlbum.F_DAY));
+        assertEquals(ALBUM_NAME, album.getName());
+        assertEquals(ALBUM_MONTH, album.getValue(PhotoAlbum.F_MONTH).getInteger());
+        assertEquals(ALBUM_DAY, album.getValue(PhotoAlbum.F_DAY).getInteger());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testAlbumNullParent() {
-        ALBUM.create(null, ATTRS_ALBUM);
+        ALBUM.create(null, ALBUM_VALUES);
     }
 
     @Test
@@ -103,18 +117,19 @@ public class PhotoKindTest {
         assertNotNull(photo);
         assertEquals(Photo.class, photo.getClass());
         assertEquals(PHOTO, photo.getKind());
-        assertEquals(PHOTO_NAME, photo.getAttribute(Photo.F_NAME));
-        assertEquals(PHOTO_SIZE, (long) photo.getAttribute(Photo.F_SIZE));
+        assertEquals(createAlbum(), photo.getParent());
+        assertEquals(PHOTO_NAME, photo.getName());
+        assertEquals(PHOTO_SIZE, photo.getValue(Photo.F_SIZE).getLong());
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)
-    public void testPhotoChild() {
+    public void testPhotoGetChild() {
+        // Collections don't have parents
         PHOTO.getChild();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testPhotoNullParent() {
-        PHOTO.create(null, ATTRS_YEAR);
+        PHOTO.create(null, PHOTO_VALUES);
     }
-    */
 }

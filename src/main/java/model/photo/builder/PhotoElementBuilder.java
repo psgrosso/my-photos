@@ -1,8 +1,10 @@
 package model.photo.builder;
 
 import model.attribute.Values;
+import model.photo.PhotoKind;
 import model.photo.element.PhotoCollection;
 import model.photo.element.PhotoElement;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -14,10 +16,18 @@ public class PhotoElementBuilder {
     private List<PhotoElementBuilder> children;
 
     /**
+     * Creates a builder for an initial photo element, that is, a PhotoCollection
+     * @param name the collection's name
+     */
+    public PhotoElementBuilder(@NotNull String name) {
+        this(PhotoKind.COLLECTION.valuesBuilderFor(name).build());
+    }
+
+    /**
      * Creates the builder.
      * @param values the photo element values
      */
-    public PhotoElementBuilder(Values values) {
+    public PhotoElementBuilder(@NotNull Values values) {
         this.values = values;
         children = new LinkedList<>();
     }

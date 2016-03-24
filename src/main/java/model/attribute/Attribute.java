@@ -36,7 +36,7 @@ public final class Attribute {
         Attribute attribute = (Attribute) o;
 
         // Short-circuit equals for better performance (fail fast)
-        return type == attribute.type && hash == attribute.hash && name.equals(attribute.name);
+        return hash == attribute.hash && type == attribute.type && name.equals(attribute.name);
     }
 
     @Override
