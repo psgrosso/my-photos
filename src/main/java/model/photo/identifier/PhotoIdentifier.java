@@ -2,13 +2,10 @@ package model.photo.identifier;
 
 
 import com.google.common.collect.ImmutableList;
-import model.attribute.Attribute;
-import model.attribute.AttributeSet;
 import model.attribute.Values;
 import model.photo.PhotoKind;
 import model.photo.element.PhotoElement;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 import java.util.Objects;
@@ -18,26 +15,25 @@ import java.util.Objects;
  * This class uniquely identifies a photo element.
  * It contains the identifier for the specified photo element and all the identifiers of its ancestors.
  * Behaves as an iterable, with its parents first (first element will be the PhotoCollection it belongs to).
+ * It is an immutable object.
  */
 public final class PhotoIdentifier implements Iterable<LocalPhotoIdentifier> {
     private final ImmutableList<LocalPhotoIdentifier> identifiers;
     // Quick access to local identifier (already contained in identifiers
     private final LocalPhotoIdentifier localIdentifier;
+    private final int hash;
 
-
-    private PhotoIdentifier(@Nullable PhotoElement parent, @NotNull Values values) {
+    public PhotoIdentifier(@NotNull PhotoElement photoElement, @NotNull Values values) {
         final PhotoKind kind;
         ImmutableList.Builder<LocalPhotoIdentifier> builder = ImmutableList.builder();
 
-        if (parent == null) {
-            kind = PhotoKind.COLLECTION;
-        }
-        else {
-            kind = parent.getKind().getChild();
-            builder.addAll(parent.getIdentifier());
+        kind = photoElement.getKind();
+        if (kind != PhotoKind.COLLECTION) {
+            builder.addAll(photoElement.getParent().getIdentifier());
         }
         localIdentifier = new LocalPhotoIdentifier(kind, values.subset(kind.getUniqueAttributes()));
         identifiers = builder.add(localIdentifier).build();
+        hash = identifiers.hashCode();
     }
 
     /**
@@ -66,15 +62,12 @@ public final class PhotoIdentifier implements Iterable<LocalPhotoIdentifier> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PhotoIdentifier that = (PhotoIdentifier) o;
-        return Objects.equals(identifiers, that.identifiers);
+        // Fail quick
+        return hash == that.hash && Objects.equals(identifiers, that.identifiers);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(identifiers);
-    }
-
-    public static PhotoIdentifier fromPhotoParent(@Nullable PhotoElement parent, @NotNull Values values) {
-        return new PhotoIdentifier(parent, values);
+        return hash;
     }
 }

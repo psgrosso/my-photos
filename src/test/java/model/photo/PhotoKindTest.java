@@ -120,6 +120,7 @@ public class PhotoKindTest {
         assertEquals(createAlbum(), photo.getParent());
         assertEquals(PHOTO_NAME, photo.getName());
         assertEquals(PHOTO_SIZE, photo.getValue(Photo.F_SIZE).getLong());
+        assertEquals(createPhoto(createAlbum(), photo.getName(), photo.getValue(Photo.F_SIZE).getLong()), photo);
     }
 
     @Test(expectedExceptions = UnsupportedOperationException.class)

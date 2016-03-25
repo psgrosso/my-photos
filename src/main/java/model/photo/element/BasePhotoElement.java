@@ -34,7 +34,7 @@ public abstract class BasePhotoElement implements PhotoElement {
         this.parent = parent;
         this.kind = kind;
         this.values = values;
-        identifier = PhotoIdentifier.fromPhotoParent(parent, values);
+        identifier = new PhotoIdentifier(this, values);
     }
 
     @Override

@@ -5,20 +5,22 @@ import model.attribute.Values;
 import model.photo.PhotoKind;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.Objects;
-
 
 /**
- * Represents the attributes that uniquely identifies a photo element from its siblings
+ * An immutable object that represents the values that uniquely identifies a photo element from its siblings
  * In other words, given a parent photo element, this class uniquely identifies each of its children
  */
 public final class LocalPhotoIdentifier implements Comparable<LocalPhotoIdentifier> {
     private final PhotoKind kind;
-    private final Values attributes;
+    private final Values values;
+    // Pre-calculated hash
+    private final int hash;
 
-    public LocalPhotoIdentifier(@NotNull PhotoKind kind, @NotNull Values attributes) {
+    public LocalPhotoIdentifier(@NotNull PhotoKind kind, @NotNull Values values) {
         this.kind = kind;
-        this.attributes = attributes;
+        this.values = values;
+        // Pre-calculate hash code, since this object is immutable
+        hash = (17 + kind.hashCode()) * 31 + values.hashCode();
     }
 
     public PhotoKind getKind() {
@@ -30,7 +32,7 @@ public final class LocalPhotoIdentifier implements Comparable<LocalPhotoIdentifi
         if (kind != that.kind) {
             throw new IllegalArgumentException("Invalid local photo identifier: " + that);
         }
-        return attributes.compareTo(that.attributes);
+        return values.compareTo(that.values);
     }
 
     @Override
@@ -38,19 +40,20 @@ public final class LocalPhotoIdentifier implements Comparable<LocalPhotoIdentifi
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         LocalPhotoIdentifier that = (LocalPhotoIdentifier) o;
-        return kind == that.kind && attributes.equals(that.attributes);
+        // Fail quick
+        return hash == that.hash && kind == that.kind && values.equals(that.values);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(kind, attributes);
+        return hash;
     }
 
     @Override
     public String toString() {
         return "LocalPhotoIdentifier{" +
                 "kind=" + kind +
-                ", attributes=" + attributes +
+                ", values=" + values +
                 '}';
     }
 }

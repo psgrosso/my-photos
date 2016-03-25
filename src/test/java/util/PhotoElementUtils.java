@@ -86,6 +86,11 @@ public class PhotoElementUtils {
         return longAttribute(counter);
     }
 
+    public static Values newNameValue(String name) {
+        return Values.builderFor(AttributeSet.of(PhotoElement.F_NAME))
+                .with(new Value(PhotoElement.F_NAME, name)).build();
+    }
+
     public static Attribute stringAttribute(int counter) {
         return Attribute.newStringAttribute("string" + counter);
     }
@@ -100,6 +105,10 @@ public class PhotoElementUtils {
 
     public static PhotoElement createCollection() {
         return COLLECTION.create(null, COLLECTION_VALUES);
+    }
+
+    public static PhotoElement createCollection(String name) {
+        return COLLECTION.create(null, COLLECTION.valuesBuilderFor(name).build());
     }
 
     public static PhotoElement createYear() {
@@ -123,15 +132,15 @@ public class PhotoElementUtils {
     }
 
     public static PhotoElement createPhoto() {
-        return new Photo(createAlbum(), PHOTO_VALUES);
+        return PHOTO.create(createAlbum(), PHOTO_VALUES);
     }
 
-    public static PhotoElement createPhoto(PhotoElement album) {
+    public static PhotoElement createSeqPhoto(PhotoElement album) {
         return createPhoto(album, String.format("photo%04d", photoCount++), random.nextLong());
     }
 
     public static PhotoElement createPhoto(PhotoElement album, String name, long size) {
-        return new Photo(album, Photo.valuesFor(name, size));
+        return PHOTO.create(album, Photo.valuesFor(name, size));
     }
 
 
