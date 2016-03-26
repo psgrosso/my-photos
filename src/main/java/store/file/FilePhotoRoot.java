@@ -19,12 +19,79 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public final class FilePhotoWalker {
+
+public final class FilePhotoRoot {
     private static final Pattern ALBUM_PATTERN = Pattern.compile("^([\\d]{4})\\.([\\d]{2})\\.([\\d]{2}) (.+)$");
     private static final Set<String> PHOTO_EXTENSIONS;
     private static final long MIN_SIZE = 1024L;
-    
-    private PhotoElement tryCollection(@NotNull Path path) {
+
+    private final Path rootPath;
+    private final PhotoElement rootPhotoCollection;
+    private final PhotoElement rootPhotoElement;
+
+    /**
+     * Returns the parent path of the whole photo element tree.  It is a path that contains the collection
+     * @return the root path
+     */
+    public Path getRootPath() {
+        return rootPath;
+    }
+
+    /**
+     * Returns the root photo collection
+     * @return the related photo collection
+     */
+    public PhotoElement getRootPhotoCollection() {
+        return rootPhotoCollection;
+    }
+
+    /**
+     * Returns the photo element related to the specified path
+     * @return the photo element
+     */
+    public PhotoElement getRootPhotoElement() {
+        return rootPhotoElement;
+    }
+
+    public static FilePhotoRoot fromPath(@NotNull Path path) {
+        path = path.toAbsolutePath().normalize();
+        PhotoElement photoElement = guessRootElement(path);
+        if (photoElement == null) {
+            return null;
+        }
+        PhotoElement rootElement = photoElement;
+        Path rootPath = path;
+        while (rootElement.getKind() != PhotoKind.COLLECTION) {
+            rootElement = rootElement.getParent();
+            rootPath = rootPath.getParent();
+        }
+        // Return the parent path of the found collection
+        return new FilePhotoRoot(rootPath.getParent(), rootElement, photoElement);
+    }
+
+    private FilePhotoRoot(@NotNull Path rootPath, @NotNull PhotoElement rootPhotoCollection,
+                          @NotNull PhotoElement rootPhotoElement) {
+        this.rootPath = rootPath;
+        this.rootPhotoCollection = rootPhotoCollection;
+        this.rootPhotoElement = rootPhotoElement;
+    }
+
+    private static PhotoElement guessRootElement(@NotNull Path path) {
+        // Simple heuristics to guess a candidate kind
+        PhotoElement result = tryAlbum(path);
+        if (result == null) {
+            result = tryYear(path);
+            if (result == null) {
+                result = tryPhoto(path);
+                if (result == null) {
+                    result = tryCollection(path);
+                }
+            }
+        }
+        return result;
+    }
+
+    private static PhotoElement tryCollection(@NotNull Path path) {
         if (PathAttributes.isDirectory(path)) {
             Values values = PhotoKind.COLLECTION.valuesBuilderFor(path.getFileName().toString()).build();
             return new PhotoCollection(values);
@@ -32,7 +99,7 @@ public final class FilePhotoWalker {
         return null;
     }
 
-    private PhotoElement tryYear(@NotNull Path path) {
+    private static PhotoElement tryYear(@NotNull Path path) {
         try {
             String yearValue = path.getFileName().toString();
             PhotoYear.parseYear(yearValue);
@@ -50,7 +117,7 @@ public final class FilePhotoWalker {
         return null;
     }
 
-    private PhotoElement tryAlbum(@NotNull Path path) {
+    private static PhotoElement tryAlbum(@NotNull Path path) {
         String candidate = path.getFileName().toString();
         final Matcher matcher = ALBUM_PATTERN.matcher(candidate);
         if (!matcher.matches() || !PathAttributes.isDirectory(path)) {
@@ -74,7 +141,7 @@ public final class FilePhotoWalker {
         return null;
     }
 
-    private PhotoElement tryPhoto(@NotNull Path path) {
+    private static PhotoElement tryPhoto(@NotNull Path path) {
         String candidate = path.getFileName().toString();
         int index = candidate.lastIndexOf('.');
         if (index == -1) {
