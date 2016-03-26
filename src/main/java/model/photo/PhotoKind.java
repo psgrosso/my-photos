@@ -48,7 +48,7 @@ public enum PhotoKind {
             return ALBUM;
         }
     },
-    ALBUM(AttributeSet.of(PhotoAlbum.F_NAME, PhotoAlbum.F_MONTH, PhotoAlbum.F_DAY),
+    ALBUM(AttributeSet.of(PhotoAlbum.F_NAME, PhotoAlbum.F_YEAR, PhotoAlbum.F_MONTH, PhotoAlbum.F_DAY),
             AttributeSet.of(PhotoAlbum.F_NAME, PhotoAlbum.F_MONTH, PhotoAlbum.F_DAY)) {
 
         @Override

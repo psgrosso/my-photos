@@ -11,6 +11,8 @@ import model.photo.element.PhotoElement;
 import model.photo.element.PhotoYear;
 import org.testng.annotations.Test;
 
+import java.util.Calendar;
+
 import static model.photo.PhotoKind.*;
 import static util.PhotoElementUtils.*;
 import static org.testng.AssertJUnit.*;
@@ -91,17 +93,25 @@ public class PhotoKindTest {
 
     @Test
     public void testAlbum() {
-        assertEquals(YEAR, ALBUM.getParent());
-        assertEquals(PHOTO, ALBUM.getChild());
-        PhotoElement album = createAlbum();
+        final Calendar calendar = Calendar.getInstance();
+        calendar.setLenient(false);
+        calendar.clear();
+        calendar.set(1973, 11, 211);
 
-        assertNotNull(album);
-        assertEquals(PhotoAlbum.class, album.getClass());
-        assertEquals(createYear(), album.getParent());
-        assertEquals(ALBUM, album.getKind());
-        assertEquals(ALBUM_NAME, album.getName());
-        assertEquals(ALBUM_MONTH, album.getValue(PhotoAlbum.F_MONTH).getInteger());
-        assertEquals(ALBUM_DAY, album.getValue(PhotoAlbum.F_DAY).getInteger());
+        System.out.println(calendar.get(Calendar.MONTH));
+//
+//
+//        assertEquals(YEAR, ALBUM.getParent());
+//        assertEquals(PHOTO, ALBUM.getChild());
+//        PhotoElement album = createAlbum();
+//
+//        assertNotNull(album);
+//        assertEquals(PhotoAlbum.class, album.getClass());
+//        assertEquals(createYear(), album.getParent());
+//        assertEquals(ALBUM, album.getKind());
+//        assertEquals(ALBUM_NAME, album.getName());
+//        assertEquals(ALBUM_MONTH, album.getValue(PhotoAlbum.F_MONTH).getInteger());
+//        assertEquals(ALBUM_DAY, album.getValue(PhotoAlbum.F_DAY).getInteger());
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)

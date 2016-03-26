@@ -8,6 +8,7 @@ import model.attribute.Values;
 import model.photo.element.Photo;
 import model.photo.element.PhotoAlbum;
 import model.photo.element.PhotoElement;
+import model.photo.element.PhotoYear;
 
 import java.util.Random;
 
@@ -128,7 +129,7 @@ public class PhotoElementUtils {
     }
 
     public static PhotoElement createAlbum(PhotoElement year, int month, int date, String name) {
-        return ALBUM.create(year, PhotoAlbum.valuesFor(name, month, date));
+        return ALBUM.create(year, PhotoAlbum.valuesFor(name, ((PhotoYear)year).getYear(), month, date));
     }
 
     public static PhotoElement createPhoto() {

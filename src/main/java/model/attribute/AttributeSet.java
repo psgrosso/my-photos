@@ -93,4 +93,11 @@ public final class AttributeSet implements Iterable<Attribute> {
                                   @NotNull Attribute attribute3) {
         return new AttributeSet(ImmutableSet.of(attribute1, attribute2, attribute3));
     }
+
+    public static AttributeSet of(@NotNull Attribute attribute1,
+                                  @NotNull Attribute attribute2,
+                                  @NotNull Attribute attribute3,
+                                  @NotNull Attribute attribute4) {
+        return new AttributeSet(ImmutableSet.of(attribute1, attribute2, attribute3, attribute4));
+    }
 }

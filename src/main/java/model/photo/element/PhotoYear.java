@@ -13,20 +13,23 @@ public final class PhotoYear extends BasePhotoElement {
 
     public PhotoYear(@NotNull PhotoElement parent, @NotNull Values values) {
         super(parent, PhotoKind.YEAR, values);
-        String stringYear = values.get(F_NAME).getString();
-        try {
-            int integerYear = Integer.parseInt(stringYear);
-            if (integerYear < MIN_YEAR || integerYear > MAX_YEAR) {
-                throw new IllegalArgumentException("Year is out of range: " + integerYear);
-            }
-            year = integerYear;
-        }
-        catch (NumberFormatException e) {
-            throw new IllegalArgumentException("Invalid year: " + stringYear);
-        }
+        year = parseYear(values.get(F_NAME).getString());
     }
 
     public int getYear() {
         return year;
+    }
+
+    public static int parseYear(@NotNull String yearValue) {
+        try {
+            int year = Integer.parseInt(yearValue);
+            if (year < MIN_YEAR || year > MAX_YEAR) {
+                throw new IllegalArgumentException("Year is out of range: " + year);
+            }
+            return year;
+        }
+        catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Invalid year: " + yearValue);
+        }
     }
 }
