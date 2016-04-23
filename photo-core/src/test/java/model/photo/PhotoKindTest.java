@@ -5,7 +5,6 @@ import model.attribute.AttributeSet;
 import model.attribute.Value;
 import model.attribute.Values;
 import model.photo.element.Photo;
-import model.photo.element.PhotoAlbum;
 import model.photo.element.PhotoCollection;
 import model.photo.element.PhotoElement;
 import model.photo.element.PhotoYear;
@@ -14,8 +13,8 @@ import org.testng.annotations.Test;
 import java.util.Calendar;
 
 import static model.photo.PhotoKind.*;
-import static util.PhotoElementUtils.*;
 import static org.testng.AssertJUnit.*;
+import static util.PhotoElementUtilsTest.*;
 
 public class PhotoKindTest {
     private static final Attribute ATTR_INVALID = Attribute.newIntegerAttribute("invalid-attr");

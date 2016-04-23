@@ -7,7 +7,7 @@ import java.util.Iterator;
 
 import static model.photo.PhotoKind.*;
 import static org.testng.AssertJUnit.*;
-import static util.PhotoElementUtils.*;
+import static util.PhotoElementUtilsTest.*;
 
 public class PhotoIdentifierTest {
 

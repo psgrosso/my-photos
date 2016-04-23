@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 import static model.photo.PhotoKind.*;
 import static org.testng.AssertJUnit.*;
-import static util.PhotoElementUtils.*;
+import static util.PhotoElementUtilsTest.*;
 
 public class LocalPhotoIdentifierTest {
 

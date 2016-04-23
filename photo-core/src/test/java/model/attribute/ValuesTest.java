@@ -3,7 +3,7 @@ package model.attribute;
 import org.testng.annotations.Test;
 
 import static org.testng.AssertJUnit.*;
-import static util.PhotoElementUtils.*;
+import static util.PhotoElementUtilsTest.*;
 
 
 
@@ -157,8 +157,8 @@ public final class ValuesTest {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void testIllegalGet() {
-        Values attributeMap = valuesFrom(1973, LONG_VALUE);
+        Values values = valuesFrom(1973, LONG_VALUE);
         // Will throw an exception
-        attributeMap.get(newAttribute(1973, 2));
+        values.get(newAttribute(1973, 2));
     }
 }

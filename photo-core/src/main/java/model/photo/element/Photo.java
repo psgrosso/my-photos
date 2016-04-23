@@ -17,6 +17,10 @@ public final class Photo extends BasePhotoElement {
         super(parent, PhotoKind.PHOTO, values);
     }
 
+    public long getSize() {
+        return getValue(F_SIZE).getLong();
+    }
+
     public static Values valuesFor(@NotNull String name, long size) {
         return PhotoKind.PHOTO.valuesBuilderFor(name)
                             .with(new Value(F_SIZE, size))
